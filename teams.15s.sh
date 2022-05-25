@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 # metadata
-# <xbar.title>Teams Next Meetings</xbar.title>
-# <xbar.version>v0.1</xbar.version>
+# <xbar.title>MS Teams Next Meetings</xbar.title>
+# <xbar.version>v0.1.0</xbar.version>
 # <xbar.author>Alexander Lais</xbar.author>
 # <xbar.author.github>peanball</xbar.author.github>
-# <xbar.desc>Next Team Meetings</xbar.desc>
+# <xbar.desc>Shows upcoming MS Teams meetings and links them to the MS Teams Desktop client directly.</xbar.desc>
 # <xbar.abouturl>https://github.com/peanball/teams-swiftbar/README.md<xbar.abouturl>
-# <xbar.image></xbar.image>
-# <bitbar.dependencies>python3, icalBuddy(fixed)</bitbar.dependencies>
+# <xbar.image>https://raw.githubusercontent.com/peanball/teams-swiftbar/main/screenshot.png</xbar.image>
+# <xbar.dependencies>python3, icalBuddy(fixed)</xbar.dependencies>
 # <swiftbar.runInBash>true</swiftbar.runInBash>
 
 import datetime
