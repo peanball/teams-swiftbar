@@ -2,6 +2,8 @@
 
 This plugin checks your calendar for upcoming MS Teams meetings and links them with direct links to the MS Teams desktop client. No more weird redirects through the browser, just open the meeting right away.
 
+![Screenshot](screenshot.png "A screenshot of the plug-in")
+
 ## Features
 
 * Finds calendar entries for the current day that contain links to https://teams.microsoft.com and turns them to `msteams:` links that are opened by the MS Teams Desktop client right away
