@@ -2,7 +2,7 @@
 
 # metadata
 # <xbar.title>MS Teams Next Meetings</xbar.title>
-# <xbar.version>v0.1.0</xbar.version>
+# <xbar.version>v0.1.1</xbar.version>
 # <xbar.author>Alexander Lais</xbar.author>
 # <xbar.author.github>peanball</xbar.author.github>
 # <xbar.desc>Shows upcoming MS Teams meetings and links them to the MS Teams Desktop client directly.</xbar.desc>
@@ -55,34 +55,20 @@ with os.popen(cmd) as result:
 
         links = re.findall(teams_link, notes)
         if links:
-            link = f"msteams:{unquote(links[0])}"
+            link = f"msteams:{links[0]}"
 
-        teams_meetings.append(
-            [
-                name,
-                start,
-                end,
-                link,
-            ]
-        )
+            teams_meetings.append(
+                [
+                    name,
+                    start,
+                    end,
+                    link,
+                ]
+            )
 
 if not teams_meetings:
     exit(0)
 
-running_meeting = [m for m in teams_meetings if m[1] <= now and m[2] > now]
-
-# time in minutes when a 'countdown' is shown in the item's main text
-upcoming_time = 15
-# time in minutes when a 'countdown' is shown with a link to the meeting in the item's main text
-pending_time = 5
-
-upcoming_meeting = [
-    m for m in teams_meetings if m[1] > now and (m[1] - now) < datetime.timedelta(minutes=upcoming_time) and (m[1] - now) > datetime.timedelta(minutes=pending_time)
-]
-
-pending_meeting = [
-    m for m in teams_meetings if m[1] > now and (m[1] - now) < datetime.timedelta(minutes=pending_time)
-]
 
 def format_duration(seconds):
     words = ["y", "d", "h", "m", "s"]
@@ -105,7 +91,43 @@ def format_duration(seconds):
 
         return "".join(duration)
 
-by_start=lambda m: m[1]
+
+running_meeting = [
+    m for m in teams_meetings if m[1] <= now and m[2] > now
+]
+
+# print("running:",running_meeting)
+
+# time in minutes when a 'countdown' is shown in the item's main text
+upcoming_time = 15
+# time in minutes when a 'countdown' is shown with a link to the meeting in the item's main text
+pending_time = 8
+
+upcoming_meeting = [
+    m
+    for m in teams_meetings
+    if m[1] > now
+    and (m[1] - now).total_seconds() > 0
+    and (m[1] - now) < datetime.timedelta(minutes=upcoming_time)
+    and (m[1] - now) > datetime.timedelta(minutes=pending_time)
+]
+
+# print("upcoming:",upcoming_meeting)
+
+pending_meeting = [
+    m
+    for m in teams_meetings
+    if m[1] > now
+    and (m[1] - now).total_seconds() > 0
+    and (m[1] - now) < datetime.timedelta(minutes=pending_time)
+]
+
+# print("pending:",pending_meeting)
+
+
+def by_start(m):
+    return m[1]
+
 
 if pending_meeting:
     (name, start, end, link) = sorted(pending_meeting, key=by_start)[0]
@@ -130,5 +152,7 @@ for (name, start, end, link) in sorted(teams_meetings, key=by_start):
     starttime = start.strftime("%H:%M")
     endtime = end.strftime("%H:%M")
     duration = format_duration((end - start).total_seconds())
-
-    print(f"{name.strip()} - {starttime} ({duration}) | href={link}")
+    href = ""
+    if link:
+        href = f" | href={link}"
+    print(f"{name.strip()} - {starttime} ({duration}){href}")
