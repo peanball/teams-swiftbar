@@ -14,12 +14,9 @@ This plugin checks your calendar for upcoming MS Teams meetings and links them w
 
 ## Prerequisites
 
-1. SwiftBar. This will likely also work with XBar but I have not tried.
-2. `icalBuddy`.  
-    Usually this can be installed via `brew install ical-buddy`, but the version there is not working correctly in SwiftBar.
-    See below in Troubleshooting.
+1. SwiftBar 1.4.4. This will likely also work with XBar but I have not tried.
+2. `icalBuddy`, can be installed via `brew install ical-buddy`.
 
 ## Troubleshooting
 
-* SwiftBar needs to have Calendar permissions. The current version 1.4.3 (and 1.4.4 beta) were not asking for permission. Version 1.2.1 did ask for permission.
-* The version currently (2022-05-25) installed via Homebrew has a bug that will not ask for Calendar access and will not show any results. A pre-built version [in the KeyboardMaestro Forum](https://forum.keyboardmaestro.com/t/icalbuddy-doesnt-work-within-keyboard-maestro-mojave-calendar-permissions/15446/6) works fine. Install at your own risk. There is hope that the upstream maintainer of the Homebrew release will include the patch soon and I can remove this section.
+* issues in `icalBuddy` via Homebrew have been resolved. No known issues.
