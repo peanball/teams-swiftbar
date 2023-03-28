@@ -2,7 +2,7 @@
 
 # metadata
 # <xbar.title>MS Teams Next Meetings</xbar.title>
-# <xbar.version>v0.1.1</xbar.version>
+# <xbar.version>v0.1.2</xbar.version>
 # <xbar.author>Alexander Lais</xbar.author>
 # <xbar.author.github>peanball</xbar.author.github>
 # <xbar.desc>Shows upcoming MS Teams meetings and links them to the MS Teams Desktop client directly.</xbar.desc>
@@ -11,7 +11,7 @@
 # <xbar.dependencies>python3, icalBuddy(fixed)</xbar.dependencies>
 # <swiftbar.runInBash>true</swiftbar.runInBash>
 
-import datetime
+from datetime import datetime, date, timezone, timedelta
 import os
 
 import re
@@ -21,8 +21,8 @@ from urllib.parse import unquote
 
 BULLET = "__BULLET__"
 
-LOCAL_TIMEZONE = datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
-now = datetime.datetime.now(tz=LOCAL_TIMEZONE)
+LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
+now = datetime.now(tz=LOCAL_TIMEZONE)
 
 cmd = (
     f"icalBuddy -b '{BULLET}' -nnr "
@@ -47,9 +47,14 @@ with os.popen(cmd) as result:
         name, notes, time = split
         name = name.replace(BULLET, "")
         startDate, endDate = re.sub(r"^.* at", "", time).split(" - ")
-        end = parser.parse(endDate)
-        if end < now:
-            continue
+        end = now
+        try:
+            end = parser.parse(endDate)
+            if end < now:
+                continue
+        except parser.ParserError as e:
+            if endDate == "...":
+                end = datetime.combine(date.today() + timedelta(days=1), datetime.min.time())
 
         start = parser.parse(startDate)
 
@@ -107,9 +112,9 @@ upcoming_meeting = [
     m
     for m in teams_meetings
     if m[1] > now
-    and (m[1] - now).total_seconds() > 0
-    and (m[1] - now) < datetime.timedelta(minutes=upcoming_time)
-    and (m[1] - now) > datetime.timedelta(minutes=pending_time)
+       and (m[1] - now).total_seconds() > 0
+       and (m[1] - now) < timedelta(minutes=upcoming_time)
+       and (m[1] - now) > timedelta(minutes=pending_time)
 ]
 
 # print("upcoming:",upcoming_meeting)
@@ -118,9 +123,10 @@ pending_meeting = [
     m
     for m in teams_meetings
     if m[1] > now
-    and (m[1] - now).total_seconds() > 0
-    and (m[1] - now) < datetime.timedelta(minutes=pending_time)
+       and (m[1] - now).total_seconds() > 0
+       and (m[1] - now) < timedelta(minutes=pending_time)
 ]
+
 
 # print("pending:",pending_meeting)
 
